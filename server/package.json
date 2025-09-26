@@ -2,6 +2,7 @@
   "name": "ecommerce-server",
   "type": "module",
   "scripts": {
+    "start": "node src/index.js",
     "dev": "node --watch src/index.js"
   },
   "dependencies": {
@@ -18,6 +19,3 @@
     "stripe": "^16.6.0"
   }
 }
-
-
-
