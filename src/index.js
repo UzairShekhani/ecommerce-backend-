@@ -18,23 +18,30 @@ const app = express()
 
 // Middlewares
 app.use(morgan('dev'))
-const allowedOrigins = (process.env.CLIENT_ORIGIN || 'https://test-ecommerce-website-henna.vercel.app/')
-  .split(',')
-  .filter(Boolean)
-const isLocalOrigin = (origin) => /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || '')
+
+// ✅ CORS setup
+const allowedOrigins = (process.env.CLIENT_ORIGIN).split(',').filter(Boolean)
+
+const isLocalOrigin = (origin) =>
+  /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || '')
+
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true)
-      if (isLocalOrigin(origin) || allowedOrigins.includes(origin)) return cb(null, true)
-      return cb(null, false)
+      if (!origin) return cb(null, true) // allow non-browser requests
+      if (isLocalOrigin(origin) || allowedOrigins.includes(origin)) {
+        return cb(null, true)
+      }
+      console.warn('❌ Blocked by CORS:', origin)
+      return cb(new Error('Not allowed by CORS'))
     },
     credentials: true,
-    methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type','Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 204,
   })
 )
+
 app.use(express.json({ limit: '10mb' }))
 
 // Health check route
