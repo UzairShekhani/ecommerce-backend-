@@ -18,7 +18,7 @@ const app = express()
 
 // Middlewares
 app.use(morgan('dev'))
-const allowedOrigins = (process.env.CLIENT_ORIGIN || '')
+const allowedOrigins = (process.env.CLIENT_ORIGIN || 'https://test-ecommerce-website-henna.vercel.app/')
   .split(',')
   .filter(Boolean)
 const isLocalOrigin = (origin) => /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || '')
@@ -35,7 +35,6 @@ app.use(
     optionsSuccessStatus: 204,
   })
 )
-app.options('*', cors())
 app.use(express.json({ limit: '10mb' }))
 
 // Health check route
