@@ -20,7 +20,8 @@ const app = express()
 app.use(morgan('dev'))
 
 // ✅ CORS setup
-const allowedOrigins = (process.env.CLIENT_ORIGIN).split(',').filter(Boolean)
+const allowedOrigins = (process.env.CLIENT_ORIGIN || '').split(',').filter(Boolean)
+console.log('✅ Allowed Origins:', allowedOrigins)
 
 const isLocalOrigin = (origin) =>
   /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin || '')
@@ -42,6 +43,10 @@ app.use(
   })
 )
 
+// ✅ handle preflight requests globally (must come AFTER cors middleware)
+app.options('*', cors())
+
+// Parse JSON
 app.use(express.json({ limit: '10mb' }))
 
 // Health check route
